@@ -17,21 +17,21 @@ public class Server {
         this.hdd = serverType.getHdd();
     }
 
-    public boolean reduceByVM(VirtualMachine virtualMachine) {
-        // check first (for enough resources) and then perform operation
-        if (cpu >= virtualMachine.getCpu()
+    public boolean checkSizeForVM(VirtualMachine virtualMachine) {
+    	if (cpu >= virtualMachine.getCpu()
                 && ram >= virtualMachine.getRam()
                 && hdd >= virtualMachine.getHdd()) {
-            cpu -= virtualMachine.getCpu();
-            ram -= virtualMachine.getRam();
-            hdd -= virtualMachine.getHdd();
-
             return true;
         } else {
             // Server does not have enough resources.
             return false;
         }
-
+    }
+    
+    public void reduceByVM(VirtualMachine virtualMachine) {
+		cpu -= virtualMachine.getCpu();
+        ram -= virtualMachine.getRam();
+        hdd -= virtualMachine.getHdd();
     }
 
     public Integer getCpu() {

@@ -2,21 +2,24 @@ package com.moebel_de;
 
 public class ServerPlanning {
     public int calculate(Server serverType, VirtualMachine[] virtualMachines) throws Exception {
-        if (virtualMachines.length == 0) {
-            throw new Exception("No virtual machines specified.");
-        }
-
-        Server calcServer = new Server(serverType);
-        int result = 1;
-
-        for (VirtualMachine virtualMachine : virtualMachines) {
-            if (!calcServer.reduceByVM(virtualMachine)) {
-                // no space left on server, a new server needs to be spawned
-                result += 1;
-                calcServer = new Server(serverType);
-            }
-        }
+        int result = 0;
+        Server calcServer = null;
         
+        for (VirtualMachine virtualMachine : virtualMachines) {
+        	// check if operation is possible
+        	if (!serverType.checkSizeForVM(virtualMachine)) {
+        		throw new Exception("At least one virtual machine does not fit in an empty server.");
+        	}
+
+        	// check if current server is large enough
+            if (calcServer == null || !calcServer.checkSizeForVM(virtualMachine)) {
+            	calcServer = new Server(serverType);
+            	result += 1;
+            }
+            
+            // now it is possible, so perform placement
+            calcServer.reduceByVM(virtualMachine);
+        }
         return result;
     }
 }
